@@ -1,11 +1,10 @@
 package net.kyrptonaught.kyrptconfig.config.screen.items.lists.entries;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-
 import java.util.List;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 
 public class IconEntry<E> extends ListStringEntry {
     protected boolean allowTags = false;
@@ -18,7 +17,7 @@ public class IconEntry<E> extends ListStringEntry {
         this.allowTags = allowTags;
     }
 
-    public ItemConvertible getItemToRender(float delta) {
+    public ItemLike getItemToRender(float delta) {
         return Items.BARRIER;
     }
 
@@ -32,10 +31,10 @@ public class IconEntry<E> extends ListStringEntry {
     }
 
     @Override
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
         super.render(context, x, y, mouseX, mouseY, delta);
         if (deleted) return;
-        ItemConvertible item = getItemToRender(delta);
-        context.drawItem(new ItemStack(item), x, y);
+        ItemLike item = getItemToRender(delta);
+        context.renderItem(new ItemStack(item), x, y);
     }
 }

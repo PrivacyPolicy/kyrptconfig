@@ -1,26 +1,25 @@
 package net.kyrptonaught.kyrptconfig.config.screen;
 
 import net.kyrptonaught.kyrptconfig.config.screen.items.ConfigItem;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.input.CharInput;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
-
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ConfigSection extends Screen {
 
-    Text title;
+    Component title;
     public List<ConfigItem<?>> configs = new CopyOnWriteArrayList<>();
     public NotSuckyButton sectionSelectionBTN;
     int selectionIndex = 0;
     int scrollOffset = 0;
 
-    public ConfigSection(ConfigScreen configScreen, Text title) {
+    public ConfigSection(ConfigScreen configScreen, Component title) {
         super(title);
         this.title = title;
         this.sectionSelectionBTN = new NotSuckyButton(0, 32, 10, 20, title, widget -> {
@@ -65,7 +64,7 @@ public class ConfigSection extends Screen {
         }
     }
 
-    public boolean keyPressed(KeyInput input) {
+    public boolean keyPressed(KeyEvent input) {
         for (ConfigItem<?> configItem : configs) {
             if (configItem.keyPressed(input))
                 return true;
@@ -74,7 +73,7 @@ public class ConfigSection extends Screen {
     }
 
     @Override
-    public boolean charTyped(CharInput input) {
+    public boolean charTyped(CharacterEvent input) {
         for (ConfigItem<?> configItem : configs) {
             if (configItem.charTyped(input))
                 return true;
@@ -82,7 +81,7 @@ public class ConfigSection extends Screen {
         return false;
     }
 
-    public boolean mouseClicked(Click click, boolean doubled) {
+    public boolean mouseClicked(MouseButtonEvent click, boolean doubled) {
         for (ConfigItem<?> configItem : configs) {
             configItem.mouseClicked(click, doubled);
         }
@@ -92,7 +91,7 @@ public class ConfigSection extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-        scrollOffset = MathHelper.clamp(scrollOffset + (int) (verticalAmount * 15), -calculateSectionHeight(), 0);
+        scrollOffset = Mth.clamp(scrollOffset + (int) (verticalAmount * 15), -calculateSectionHeight(), 0);
         return true;
     }
 
@@ -103,7 +102,7 @@ public class ConfigSection extends Screen {
         return sectionSize - visibleHeight;
     }
 
-    public void render(DrawContext context, int startY, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int startY, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         int runningY = scrollOffset + startY + 5;
         for (ConfigItem<?> configItem : configs) {
@@ -114,7 +113,7 @@ public class ConfigSection extends Screen {
 
     }
 
-    public void render2(DrawContext context, int startY, int mouseX, int mouseY, float delta) {
+    public void render2(GuiGraphics context, int startY, int mouseX, int mouseY, float delta) {
         int runningY = scrollOffset + startY + 5;
         for (ConfigItem<?> configItem : configs) {
             configItem.render2(context, 20, runningY, mouseX, mouseY, delta);
@@ -123,6 +122,6 @@ public class ConfigSection extends Screen {
     }
 
     @Override
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
     }
 }

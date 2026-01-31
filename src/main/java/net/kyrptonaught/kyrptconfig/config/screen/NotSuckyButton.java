@@ -1,14 +1,14 @@
 package net.kyrptonaught.kyrptconfig.config.screen;
 
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.util.Colors;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.util.CommonColors;
 
-public class NotSuckyButton extends ButtonWidget.Text {
-    int buttonColor = Colors.WHITE;
+public class NotSuckyButton extends Button.Plain {
+    int buttonColor = CommonColors.WHITE;
     public boolean disableHover = false;
 
-    public NotSuckyButton(int x, int y, int width, int height, net.minecraft.text.Text message, PressAction onPress) {
-        super(x, y, width, height, message, onPress, DEFAULT_NARRATION_SUPPLIER);
+    public NotSuckyButton(int x, int y, int width, int height, net.minecraft.network.chat.Component message, OnPress onPress) {
+        super(x, y, width, height, message, onPress, DEFAULT_NARRATION);
     }
 
     public void setButtonColor(int color) {
@@ -20,8 +20,8 @@ public class NotSuckyButton extends ButtonWidget.Text {
     }
 
     @Override
-    public net.minecraft.text.Text getMessage() {
-        net.minecraft.text.Text message = super.getMessage();
+    public net.minecraft.network.chat.Component getMessage() {
+        net.minecraft.network.chat.Component message = super.getMessage();
         if (this.active) message = message.copy().withColor(buttonColor);
         return message;
     }

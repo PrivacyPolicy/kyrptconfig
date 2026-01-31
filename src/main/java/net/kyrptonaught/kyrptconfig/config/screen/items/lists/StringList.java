@@ -5,31 +5,30 @@ import net.kyrptonaught.kyrptconfig.config.screen.NotSuckyButton;
 import net.kyrptonaught.kyrptconfig.config.screen.items.ConfigItem;
 import net.kyrptonaught.kyrptconfig.config.screen.items.SubItem;
 import net.kyrptonaught.kyrptconfig.config.screen.items.lists.entries.ListStringEntry;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import java.util.ArrayList;
 import java.util.List;
 
 public class StringList extends SubItem<List<String>> {
     protected NotSuckyButton addButton, clearButton;
 
-    public StringList(Text name, List<String> value, List<String> defaultValue) {
+    public StringList(Component name, List<String> value, List<String> defaultValue) {
         this(name, value, defaultValue, true);
     }
 
-    public StringList(Text name, List<String> value, List<String> defaultValue, Boolean autoPop) {
+    public StringList(Component name, List<String> value, List<String> defaultValue, Boolean autoPop) {
         super(name, false);
         this.value = value;
         this.defaultValue = defaultValue;
         if (autoPop) populateFromList();
-        this.addButton = new NotSuckyButton(0, 0, 35, 20, Text.translatable("key.kyrptconfig.config.add"), widget -> {
+        this.addButton = new NotSuckyButton(0, 0, 35, 20, Component.translatable("key.kyrptconfig.config.add"), widget -> {
             addConfigItem(createNewEntry(""));
         });
-        this.clearButton = new NotSuckyButton(0, 0, 35, 20, Text.translatable("key.kyrptconfig.config.clear"), widget -> {
+        this.clearButton = new NotSuckyButton(0, 0, 35, 20, Component.translatable("key.kyrptconfig.config.clear"), widget -> {
             setValue(new ArrayList<>());
         });
         useDefaultResetBTN();
@@ -82,16 +81,16 @@ public class StringList extends SubItem<List<String>> {
     }
 
     @Override
-    public void mouseClicked(Click click, boolean doubled) {
+    public void mouseClicked(MouseButtonEvent click, boolean doubled) {
         if (expanded && (addButton.mouseClicked(click, doubled) || clearButton.mouseClicked(click, doubled)) || resetButton.mouseClicked(click, doubled))
             return;
         super.mouseClicked(click, doubled);
     }
 
     @Override
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
         super.render(context, x, y, mouseX, mouseY, delta);
-        context.drawText(MinecraftClient.getInstance().textRenderer, expanded ? "-" : "+", x - 10, y + 5, Colors.WHITE, false);
+        context.drawString(Minecraft.getInstance().font, expanded ? "-" : "+", x - 10, y + 5, CommonColors.WHITE, false);
         subStart = y;
         if (expanded) {
             this.clearButton.setY(y);

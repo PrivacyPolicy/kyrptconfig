@@ -1,43 +1,42 @@
 package net.kyrptonaught.kyrptconfig.config.screen.items.number;
 
 import net.kyrptonaught.kyrptconfig.config.screen.items.ConfigItem;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.input.CharInput;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 public abstract class NumberItem<T extends Number> extends ConfigItem<T> {
 
     protected T min, max;
-    TextFieldWidget valueEntry;
+    EditBox valueEntry;
     boolean lastInputFixed = false;
 
-    public NumberItem(Text name, T value, T defaultValue) {
+    public NumberItem(Component name, T value, T defaultValue) {
         super(name, value, defaultValue);
         useDefaultResetBTN();
-        valueEntry = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 96, 17, Text.literal("Number Entry"));
-        valueEntry.setText(value.toString());
-        valueEntry.setChangedListener(this::onTyped);
+        valueEntry = new EditBox(Minecraft.getInstance().font, 0, 0, 96, 17, Component.literal("Number Entry"));
+        valueEntry.setValue(value.toString());
+        valueEntry.setResponder(this::onTyped);
     }
 
     public NumberItem setMinMax(T min, T max) {
         this.min = min;
         this.max = max;
-        valueEntry.setTooltip(Tooltip.of(Text.literal(min + " - " + max)));
+        valueEntry.setTooltip(Tooltip.create(Component.literal(min + " - " + max)));
         return this;
     }
 
     @Override
     public void setValue(T value) {
-        valueEntry.setText(fixInput(value).toString());
+        valueEntry.setValue(fixInput(value).toString());
     }
 
     public T fixInput(T value) {
@@ -55,9 +54,9 @@ public abstract class NumberItem<T extends Number> extends ConfigItem<T> {
     public void onTyped(String s) {
         boolean isValid = isValid(s);
         if (isValid) {
-            valueEntry.setEditableColor(0xE0E0E0E0);
+            valueEntry.setTextColor(0xE0E0E0E0);
         } else {
-            valueEntry.setEditableColor(Colors.RED);
+            valueEntry.setTextColor(CommonColors.RED);
         }
         lastInputFixed = false;
     }
@@ -87,30 +86,30 @@ public abstract class NumberItem<T extends Number> extends ConfigItem<T> {
     }
 
     public void fixLastInput() {
-        valueEntry.setText(fixInput(parseValue(valueEntry.getText())).toString());
-        value = parseValue(valueEntry.getText());
+        valueEntry.setValue(fixInput(parseValue(valueEntry.getValue())).toString());
+        value = parseValue(valueEntry.getValue());
         lastInputFixed = true;
     }
 
     @Override
-    public boolean keyPressed(KeyInput input) {
+    public boolean keyPressed(KeyEvent input) {
         super.keyPressed(input);
         return valueEntry.keyPressed(input);
     }
 
     @Override
-    public boolean charTyped(CharInput input) {
+    public boolean charTyped(CharacterEvent input) {
         return valueEntry.charTyped(input);
     }
 
     @Override
-    public void mouseClicked(Click click, boolean doubled) {
+    public void mouseClicked(MouseButtonEvent click, boolean doubled) {
         super.mouseClicked(click, doubled);
         valueEntry.setFocused(valueEntry.mouseClicked(click, doubled));
     }
 
     @Override
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
         super.render(context, x, y, mouseX, mouseY, delta);
         this.valueEntry.setY(y + 2);
         this.valueEntry.setX(resetButton.getX() - resetButton.getWidth() - (valueEntry.getWidth() / 2) - 20);

@@ -2,20 +2,19 @@ package net.kyrptonaught.kyrptconfig.config.screen.items.lists;
 
 import net.kyrptonaught.kyrptconfig.config.screen.items.lists.entries.BlockIconEntry;
 import net.kyrptonaught.kyrptconfig.config.screen.items.lists.entries.ListStringEntry;
-import net.minecraft.text.Text;
-
+import net.minecraft.network.chat.Component;
 import java.util.List;
 
 public class BlockIconList extends StringList {
     boolean allowTags = false;
 
     @Deprecated
-    public BlockIconList(Text name, List<String> value, List<String> defaultValue) {
+    public BlockIconList(Component name, List<String> value, List<String> defaultValue) {
         super(name, value, defaultValue);
         setToolTip();
     }
 
-    public BlockIconList(Text name, List<String> value, List<String> defaultValue, Boolean allowTags) {
+    public BlockIconList(Component name, List<String> value, List<String> defaultValue, Boolean allowTags) {
         super(name, value, defaultValue, false);
         this.allowTags = allowTags;
         setToolTip();
@@ -24,10 +23,10 @@ public class BlockIconList extends StringList {
 
     public void setToolTip() {
         if (allowTags) {
-            setToolTip(Text.translatable("key.kyrptconfig.config.hastags"),
-                    Text.translatable("key.kyrptconfig.config.tagsdisplay"));
+            setToolTip(Component.translatable("key.kyrptconfig.config.hastags"),
+                    Component.translatable("key.kyrptconfig.config.tagsdisplay"));
         } else {
-            setToolTip(Text.translatable("key.kyrptconfig.config.nothastags"));
+            setToolTip(Component.translatable("key.kyrptconfig.config.nothastags"));
         }
     }
 

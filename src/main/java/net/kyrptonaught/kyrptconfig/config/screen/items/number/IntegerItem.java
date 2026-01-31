@@ -1,9 +1,9 @@
 package net.kyrptonaught.kyrptconfig.config.screen.items.number;
 
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 
 public class IntegerItem extends NumberItem<Integer> {
-    public IntegerItem(Text name, int value, int defaultValue) {
+    public IntegerItem(Component name, int value, int defaultValue) {
         super(name, value, defaultValue);
         setMinMax(Integer.MIN_VALUE, Integer.MAX_VALUE);
     }

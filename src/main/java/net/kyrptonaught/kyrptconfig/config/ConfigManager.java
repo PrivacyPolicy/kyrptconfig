@@ -4,8 +4,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.Strictness;
 import net.fabricmc.loader.api.FabricLoader;
 import net.kyrptonaught.jankson.Jankson;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.resources.Identifier;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,7 +28,7 @@ public class ConfigManager {
         Jankson.Builder builder = CustomJankson.customJanksonBuilder();
         setJANKSON(builder
                 .registerSerializer(Identifier.class, (identifier, marshaller) -> marshaller.serialize(identifier.toString()))
-                .registerDeserializer(String.class, Identifier.class, (s, m) -> Identifier.of(s))
+                .registerDeserializer(String.class, Identifier.class, (s, m) -> Identifier.parse(s))
                 .build());
     }
 

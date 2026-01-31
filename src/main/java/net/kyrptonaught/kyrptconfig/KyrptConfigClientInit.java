@@ -17,11 +17,11 @@ public class KyrptConfigClientInit implements ClientModInitializer {
         for (NonConflictingKeyBindData bindData : keybindings) {
             NonConflictingKeyBinding nonConflictingKeyBinding = new NonConflictingKeyBinding(
                     bindData.name,
-                    bindData.getDefaultKey().getCategory(),
-                    bindData.getDefaultKey().getCode(),
+                    bindData.getDefaultKey().getType(),
+                    bindData.getDefaultKey().getValue(),
                     bindData.category
             );
-            nonConflictingKeyBinding.setBoundKey(bindData.inputType.createFromCode(bindData.keyCode));
+            nonConflictingKeyBinding.setKey(bindData.inputType.getOrCreate(bindData.keyCode));
         }
     }
 }

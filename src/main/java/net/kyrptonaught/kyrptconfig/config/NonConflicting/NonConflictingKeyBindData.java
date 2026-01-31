@@ -1,21 +1,20 @@
 package net.kyrptonaught.kyrptconfig.config.NonConflicting;
 
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.function.Consumer;
+import net.minecraft.client.KeyMapping;
 
 @Deprecated
 public class NonConflictingKeyBindData {
     public String name;
-    public KeyBinding.Category category;
-    public InputUtil.Type inputType;
+    public KeyMapping.Category category;
+    public InputConstants.Type inputType;
     public int keyCode;
-    public Consumer<InputUtil.Key> keySetEvent;
+    public Consumer<InputConstants.Key> keySetEvent;
     public String defaultKey;
 
     @Deprecated
-    public NonConflictingKeyBindData(String Name, KeyBinding.Category Category, InputUtil.Type type, int KeyCode, Consumer<InputUtil.Key> keySetEvent) {
+    public NonConflictingKeyBindData(String Name, KeyMapping.Category Category, InputConstants.Type type, int KeyCode, Consumer<InputConstants.Key> keySetEvent) {
         this.name = Name;
         this.category = Category;
         this.inputType = type;
@@ -24,19 +23,19 @@ public class NonConflictingKeyBindData {
     }
 
     @Deprecated
-    public NonConflictingKeyBindData(String Name, KeyBinding.Category Category, InputUtil.Key boundKey, String defaultKey, Consumer<InputUtil.Key> keySetEvent) {
-        this(Name, Category, boundKey.getCategory(), boundKey.getCode(), keySetEvent);
+    public NonConflictingKeyBindData(String Name, KeyMapping.Category Category, InputConstants.Key boundKey, String defaultKey, Consumer<InputConstants.Key> keySetEvent) {
+        this(Name, Category, boundKey.getType(), boundKey.getValue(), keySetEvent);
         this.defaultKey = defaultKey;
     }
 
     @Deprecated
-    public InputUtil.Key getDefaultKey() {
+    public InputConstants.Key getDefaultKey() {
         if (defaultKey == null || defaultKey.isEmpty())
-            return InputUtil.UNKNOWN_KEY;
+            return InputConstants.UNKNOWN;
         try {
-            return InputUtil.fromTranslationKey(defaultKey);
+            return InputConstants.getKey(defaultKey);
         } catch (IllegalArgumentException e) {
-            return InputUtil.UNKNOWN_KEY;
+            return InputConstants.UNKNOWN;
         }
     }
 }

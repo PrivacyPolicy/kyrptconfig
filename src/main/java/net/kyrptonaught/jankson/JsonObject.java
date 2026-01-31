@@ -43,14 +43,14 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
     private static final Predicate<String> CAN_BE_UNQUOTED = Pattern.compile("^[a-zA-Z0-9]+$").asPredicate();
     @SuppressWarnings("deprecation")
     protected Marshaller marshaller = MarshallerImpl.getFallback();
-    private final List<Entry> entries = new ArrayList<>();
+    private final List<net.kyrptonaught.jankson.JsonObject.Entry> entries = new ArrayList<>();
 
     /**
      * If there is an entry at this key, and that entry is a json object, return it. Otherwise returns null.
      */
     @Nullable
     public JsonObject getObject(@Nonnull String name) {
-        for (Entry entry : entries) {
+        for (net.kyrptonaught.jankson.JsonObject.Entry entry : entries) {
             if (entry.key.equalsIgnoreCase(name)) {
                 if (entry.value instanceof JsonObject) {
                     return (JsonObject) entry.value;
@@ -68,7 +68,7 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
      * doesn't. Returns the old value mapped to this key if there was one.
      */
     public JsonElement put(@Nonnull String key, @Nonnull JsonElement elem, @Nullable String comment) {
-        for (Entry entry : entries) {
+        for (net.kyrptonaught.jankson.JsonObject.Entry entry : entries) {
             if (entry.key.equalsIgnoreCase(key)) {
                 JsonElement result = entry.value;
                 entry.value = elem;
@@ -78,7 +78,7 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
         }
 
         //If we reached here, there's no existing mapping, so make one.
-        Entry entry = new Entry();
+        net.kyrptonaught.jankson.JsonObject.Entry entry = new net.kyrptonaught.jankson.JsonObject.Entry();
         if (elem instanceof JsonObject) ((JsonObject) elem).marshaller = marshaller;
         if (elem instanceof JsonArray) ((JsonArray) elem).marshaller = marshaller;
         entry.key = key;
@@ -90,14 +90,14 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
 
     @Nonnull
     public JsonElement putDefault(@Nonnull String key, @Nonnull JsonElement elem, @Nullable String comment) {
-        for (Entry entry : entries) {
+        for (net.kyrptonaught.jankson.JsonObject.Entry entry : entries) {
             if (entry.key.equalsIgnoreCase(key)) {
                 return entry.value;
             }
         }
 
         //If we reached here, there's no existing mapping, so make one.
-        Entry entry = new Entry();
+        net.kyrptonaught.jankson.JsonObject.Entry entry = new net.kyrptonaught.jankson.JsonObject.Entry();
         entry.key = key;
         entry.value = elem;
         entry.setComment(comment);
@@ -119,14 +119,14 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
      */
     @Nullable
     public <T> T putDefault(@Nonnull String key, @Nonnull T elem, Class<? extends T> clazz, @Nullable String comment) {
-        for (Entry entry : entries) {
+        for (net.kyrptonaught.jankson.JsonObject.Entry entry : entries) {
             if (entry.key.equalsIgnoreCase(key)) {
                 return marshaller.marshall(clazz, entry.value);
             }
         }
 
         //If we reached here, there's no existing mapping, so make one.
-        Entry entry = new Entry();
+        net.kyrptonaught.jankson.JsonObject.Entry entry = new net.kyrptonaught.jankson.JsonObject.Entry();
         entry.key = key;
         entry.value = marshaller.serialize(elem);
         if (entry.value == null) entry.value = JsonNull.INSTANCE;
@@ -151,7 +151,7 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
     @Nonnull
     public JsonObject getDelta(@Nonnull JsonObject defaults) {
         JsonObject result = new JsonObject();
-        for (Entry entry : entries) {
+        for (net.kyrptonaught.jankson.JsonObject.Entry entry : entries) {
             String key = entry.key;
             JsonElement defaultValue = defaults.get(key);
             if (defaultValue == null) {
@@ -185,7 +185,7 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
      */
     @Nullable
     public String getComment(@Nonnull String name) {
-        for (Entry entry : entries) {
+        for (net.kyrptonaught.jankson.JsonObject.Entry entry : entries) {
             if (entry.key.equalsIgnoreCase(name)) {
                 return entry.getComment();
             }
@@ -195,7 +195,7 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
     }
 
     public void setComment(@Nonnull String name, @Nullable String comment) {
-        for (Entry entry : entries) {
+        for (net.kyrptonaught.jankson.JsonObject.Entry entry : entries) {
             if (entry.key.equalsIgnoreCase(name)) {
                 entry.setComment(comment);
                 return;
@@ -227,7 +227,7 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
         }
 
         for (int i = 0; i < entries.size(); i++) {
-            Entry entry = entries.get(i);
+            net.kyrptonaught.jankson.JsonObject.Entry entry = entries.get(i);
 
             if (grammar.printWhitespace) {
                 for (int j = 0; j < nextDepth; j++) {
@@ -291,8 +291,8 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
 
         //Lists are identical sizes, but if the contents, comments, or ordering are at all different, fail them
         for (int i = 0; i < entries.size(); i++) {
-            Entry a = entries.get(i);
-            Entry b = otherObject.entries.get(i);
+            net.kyrptonaught.jankson.JsonObject.Entry a = entries.get(i);
+            net.kyrptonaught.jankson.JsonObject.Entry b = otherObject.entries.get(i);
 
             if (!a.equals(b)) return false;
         }
@@ -475,7 +475,7 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
 
         @Override
         public boolean equals(Object other) {
-            if (other == null || !(other instanceof Entry o)) return false;
+            if (other == null || !(other instanceof net.kyrptonaught.jankson.JsonObject.Entry o)) return false;
             if (!Objects.equals(comment, o.comment)) return false;
             if (!key.equals(o.key)) return false;
             return value.equals(o.value);
@@ -504,7 +504,7 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
     @Override
     public JsonObject clone() {
         JsonObject result = new JsonObject();
-        for (Entry entry : entries) {
+        for (net.kyrptonaught.jankson.JsonObject.Entry entry : entries) {
             result.put(entry.key, entry.value.clone(), entry.comment);
         }
         result.marshaller = marshaller;
@@ -522,7 +522,7 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
     @Override
     @Nullable
     public JsonElement put(@Nonnull String key, @Nonnull JsonElement elem) {
-        for (Entry entry : entries) {
+        for (net.kyrptonaught.jankson.JsonObject.Entry entry : entries) {
             if (entry.key.equalsIgnoreCase(key)) {
                 JsonElement result = entry.value;
                 entry.value = elem;
@@ -531,7 +531,7 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
         }
 
         //If we reached here, there's no existing mapping, so make one.
-        Entry entry = new Entry();
+        net.kyrptonaught.jankson.JsonObject.Entry entry = new net.kyrptonaught.jankson.JsonObject.Entry();
         entry.key = key;
         entry.value = elem;
         entries.add(entry);
@@ -548,7 +548,7 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
         if (key == null) return false;
         if (!(key instanceof String)) return false;
 
-        for (Entry entry : entries) {
+        for (net.kyrptonaught.jankson.JsonObject.Entry entry : entries) {
             if (entry.key.equalsIgnoreCase((String) key)) {
                 return true;
             }
@@ -562,7 +562,7 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
         if (val == null) return false;
         if (!(val instanceof JsonElement)) return false;
 
-        for (Entry entry : entries) {
+        for (net.kyrptonaught.jankson.JsonObject.Entry entry : entries) {
             if (entry.value.equals(val)) return true;
         }
 
@@ -575,7 +575,7 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
     @Override
     public Set<Map.Entry<String, JsonElement>> entrySet() {
         Set<Map.Entry<String, JsonElement>> result = new LinkedHashSet<>();
-        for (Entry entry : entries) {
+        for (net.kyrptonaught.jankson.JsonObject.Entry entry : entries) {
             result.add(new Map.Entry<String, JsonElement>() {
                 @Override
                 public String getKey() {
@@ -605,7 +605,7 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
     public JsonElement get(@Nullable Object key) {
         if (key == null || !(key instanceof String)) return null;
 
-        for (Entry entry : entries) {
+        for (net.kyrptonaught.jankson.JsonObject.Entry entry : entries) {
             if (entry.key.equalsIgnoreCase((String) key)) {
                 return entry.value;
             }
@@ -625,7 +625,7 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
     @Nonnull
     public Set<String> keySet() {
         Set<String> keys = new HashSet<>();
-        for (Entry entry : entries) {
+        for (net.kyrptonaught.jankson.JsonObject.Entry entry : entries) {
             keys.add(entry.key);
         }
         return keys;
@@ -644,7 +644,7 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
         if (key == null || !(key instanceof String)) return null;
 
         for (int i = 0; i < entries.size(); i++) {
-            Entry entry = entries.get(i);
+            net.kyrptonaught.jankson.JsonObject.Entry entry = entries.get(i);
             if (entry.key.equalsIgnoreCase((String) key)) {
                 return entries.remove(i).value;
             }
@@ -660,7 +660,7 @@ public class JsonObject extends JsonElement implements Map<String, JsonElement> 
     @Override
     public Collection<JsonElement> values() {
         List<JsonElement> values = new ArrayList<>();
-        for (Entry entry : entries) {
+        for (net.kyrptonaught.jankson.JsonObject.Entry entry : entries) {
             values.add(entry.value);
         }
         return values;

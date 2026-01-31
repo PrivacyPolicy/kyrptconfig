@@ -1,19 +1,19 @@
 package net.kyrptonaught.kyrptconfig.mixin.nonConflicting;
 
 import net.kyrptonaught.kyrptconfig.config.NonConflicting.NonConflictingKeyBinding;
-import net.minecraft.client.gui.screen.option.ControlsListWidget;
-import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.screens.options.controls.KeyBindsList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(value = ControlsListWidget.KeyBindingEntry.class, priority = -1)
+@Mixin(value = KeyBindsList.KeyEntry.class, priority = -1)
 public class ControlListWidgetMixin {
 
-    @Redirect(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/KeyBinding;equals(Lnet/minecraft/client/option/KeyBinding;)Z"), require = 0)
-    public boolean dontConflict(KeyBinding instance, KeyBinding other) {
+    @Redirect(method = "refreshEntry", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/KeyMapping;same(Lnet/minecraft/client/KeyMapping;)Z"), require = 0)
+    public boolean dontConflict(KeyMapping instance, KeyMapping other) {
         if (instance instanceof NonConflictingKeyBinding || other instanceof NonConflictingKeyBinding)
             return false;
-        return instance.equals(other);
+        return instance.same(other);
     }
 }

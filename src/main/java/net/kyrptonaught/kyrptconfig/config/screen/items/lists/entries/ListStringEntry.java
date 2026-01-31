@@ -2,38 +2,38 @@ package net.kyrptonaught.kyrptconfig.config.screen.items.lists.entries;
 
 import net.kyrptonaught.kyrptconfig.config.screen.NotSuckyButton;
 import net.kyrptonaught.kyrptconfig.config.screen.items.ConfigItem;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.input.CharInput;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
 
 public class ListStringEntry extends ConfigItem<String> {
     boolean deleted = false;
-    TextFieldWidget valueEntry;
+    EditBox valueEntry;
     protected NotSuckyButton delButton;
 
     public ListStringEntry(String value) {
-        super(Text.literal(""), value, value);
-        valueEntry = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 125, 18, Text.literal("Text Entry"));
+        super(Component.literal(""), value, value);
+        valueEntry = new EditBox(Minecraft.getInstance().font, 0, 0, 125, 18, Component.literal("Text Entry"));
         valueEntry.setMaxLength(256);
-        valueEntry.setText(value);
-        this.delButton = new NotSuckyButton(0, 0, 35, 20, Text.translatable("key.kyrptconfig.config.delete"), widget -> {
+        valueEntry.setValue(value);
+        this.delButton = new NotSuckyButton(0, 0, 35, 20, Component.translatable("key.kyrptconfig.config.delete"), widget -> {
             setDeleted(true);
         });
     }
 
     public void setDeleted(boolean isDeleted) {
         this.deleted = isDeleted;
-        if (deleted) valueEntry.setText("");
+        if (deleted) valueEntry.setValue("");
     }
 
     public String getValue() {
-        if (deleted || valueEntry.getText() == null) return null;
-        if (valueEntry.getText().isEmpty() || valueEntry.getText().isBlank()) return null;
-        return valueEntry.getText();
+        if (deleted || valueEntry.getValue() == null) return null;
+        if (valueEntry.getValue().isEmpty() || valueEntry.getValue().isBlank()) return null;
+        return valueEntry.getValue();
     }
 
     @Override
@@ -43,20 +43,20 @@ public class ListStringEntry extends ConfigItem<String> {
     }
 
     @Override
-    public boolean keyPressed(KeyInput input) {
+    public boolean keyPressed(KeyEvent input) {
         super.keyPressed(input);
         if (deleted) return false;
         return valueEntry.keyPressed(input);
     }
 
     @Override
-    public boolean charTyped(CharInput input) {
+    public boolean charTyped(CharacterEvent input) {
         if (deleted) return false;
         return valueEntry.charTyped(input);
     }
 
     @Override
-    public void mouseClicked(Click click, boolean doubled) {
+    public void mouseClicked(MouseButtonEvent click, boolean doubled) {
         super.mouseClicked(click, doubled);
         if (deleted) return;
         delButton.mouseClicked(click, doubled);
@@ -64,11 +64,11 @@ public class ListStringEntry extends ConfigItem<String> {
     }
 
     @Override
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
         if (deleted) return;
         super.render(context, x, y, mouseX, mouseY, delta);
         this.delButton.setY(y);
-        this.delButton.setX(MinecraftClient.getInstance().getWindow().getScaledWidth() - delButton.getWidth() - 20);
+        this.delButton.setX(Minecraft.getInstance().getWindow().getGuiScaledWidth() - delButton.getWidth() - 20);
         this.delButton.render(context, mouseX, mouseY, delta);
 
         if (valueEntry.isFocused())

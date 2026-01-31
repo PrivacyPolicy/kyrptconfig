@@ -1,25 +1,23 @@
 package net.kyrptonaught.kyrptconfig;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntryList;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
-
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
 public class TagHelper {
 
     public static List<Identifier> getBlockIDsInTag(Identifier blockTagKey) {
         List<Identifier> blocks = new ArrayList<>();
-        List<RegistryEntryList.Named<Block>> tags = Registries.BLOCK.streamTags().toList();
+        List<HolderSet.Named<Block>> tags = BuiltInRegistries.BLOCK.getTags().toList();
 
-        for (RegistryEntryList.Named<Block> tagKey : tags) {
-            if (tagKey.getTag().id().equals(blockTagKey)) {
-                Registries.BLOCK.iterateEntries(tagKey.getTag()).forEach(registryEntry -> {
-                    registryEntry.getKey().ifPresent(registryEntry2 -> blocks.add(registryEntry2.getValue()));
+        for (HolderSet.Named<Block> tagKey : tags) {
+            if (tagKey.key().location().equals(blockTagKey)) {
+                BuiltInRegistries.BLOCK.getTagOrEmpty(tagKey.key()).forEach(registryEntry -> {
+                    registryEntry.unwrapKey().ifPresent(registryEntry2 -> blocks.add(registryEntry2.identifier()));
                 });
                 break;
             }
@@ -29,11 +27,11 @@ public class TagHelper {
 
     public static List<Block> getBlocksInTag(Identifier blockTagKey) {
         List<Block> blocks = new ArrayList<>();
-        List<RegistryEntryList.Named<Block>> tags = Registries.BLOCK.streamTags().toList();
+        List<HolderSet.Named<Block>> tags = BuiltInRegistries.BLOCK.getTags().toList();
 
-        for (RegistryEntryList.Named<Block> tagKey : tags) {
-            if (tagKey.getTag().id().equals(blockTagKey)) {
-                Registries.BLOCK.iterateEntries(tagKey.getTag()).forEach(registryEntry -> {
+        for (HolderSet.Named<Block> tagKey : tags) {
+            if (tagKey.key().location().equals(blockTagKey)) {
+                BuiltInRegistries.BLOCK.getTagOrEmpty(tagKey.key()).forEach(registryEntry -> {
                     blocks.add(registryEntry.value());
                 });
                 break;
@@ -44,12 +42,12 @@ public class TagHelper {
 
     public static List<Identifier> getItemsIDsInTag(Identifier blockTagKey) {
         List<Identifier> items = new ArrayList<>();
-        List<RegistryEntryList.Named<Item>> tags = Registries.ITEM.streamTags().toList();
+        List<HolderSet.Named<Item>> tags = BuiltInRegistries.ITEM.getTags().toList();
 
-        for (RegistryEntryList.Named<Item> tagKey : tags) {
-            if (tagKey.getTag().id().equals(blockTagKey)) {
-                Registries.ITEM.iterateEntries(tagKey.getTag()).forEach(registryEntry -> {
-                    registryEntry.getKey().ifPresent(registryEntry2 -> items.add(registryEntry2.getValue()));
+        for (HolderSet.Named<Item> tagKey : tags) {
+            if (tagKey.key().location().equals(blockTagKey)) {
+                BuiltInRegistries.ITEM.getTagOrEmpty(tagKey.key()).forEach(registryEntry -> {
+                    registryEntry.unwrapKey().ifPresent(registryEntry2 -> items.add(registryEntry2.identifier()));
                 });
                 break;
             }
@@ -59,11 +57,11 @@ public class TagHelper {
 
     public static List<Item> getItemsInTag(Identifier blockTagKey) {
         List<Item> items = new ArrayList<>();
-        List<RegistryEntryList.Named<Item>> tags = Registries.ITEM.streamTags().toList();
+        List<HolderSet.Named<Item>> tags = BuiltInRegistries.ITEM.getTags().toList();
 
-        for (RegistryEntryList.Named<Item> tagKey : tags) {
-            if (tagKey.getTag().id().equals(blockTagKey)) {
-                Registries.ITEM.iterateEntries(tagKey.getTag()).forEach(registryEntry -> {
+        for (HolderSet.Named<Item> tagKey : tags) {
+            if (tagKey.key().location().equals(blockTagKey)) {
+                BuiltInRegistries.ITEM.getTagOrEmpty(tagKey.key()).forEach(registryEntry -> {
                     items.add(registryEntry.value());
                 });
                 break;

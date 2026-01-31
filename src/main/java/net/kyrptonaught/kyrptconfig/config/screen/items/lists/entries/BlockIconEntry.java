@@ -1,13 +1,12 @@
 package net.kyrptonaught.kyrptconfig.config.screen.items.lists.entries;
 
 import net.kyrptonaught.kyrptconfig.TagHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import java.util.List;
 
 public class BlockIconEntry extends IconEntry<Block> {
@@ -16,7 +15,7 @@ public class BlockIconEntry extends IconEntry<Block> {
     }
 
     @Override
-    public ItemConvertible getItemToRender(float delta) {
+    public ItemLike getItemToRender(float delta) {
         try {
             String entered = getValue();
 
@@ -25,7 +24,7 @@ public class BlockIconEntry extends IconEntry<Block> {
             if (entered.startsWith("#") && allowTags) {
                 entered = entered.replaceAll("#", "");
 
-                List<Block> blocks = TagHelper.getBlocksInTag(Identifier.of(entered));
+                List<Block> blocks = TagHelper.getBlocksInTag(Identifier.parse(entered));
                 if (blocks.size() > 0)
                     enteredTag = blocks;
                 else enteredTag = null;
@@ -37,7 +36,7 @@ public class BlockIconEntry extends IconEntry<Block> {
             }
             if (entered.startsWith("#"))
                 return Items.BARRIER;
-            return Registries.BLOCK.getOptionalValue(Identifier.of(entered)).orElse(Blocks.BARRIER);
+            return BuiltInRegistries.BLOCK.getOptional(Identifier.parse(entered)).orElse(Blocks.BARRIER);
         } catch (Exception ignored) {
         }
         return Items.BARRIER;

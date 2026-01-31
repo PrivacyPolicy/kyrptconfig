@@ -1,24 +1,24 @@
 package net.kyrptonaught.kyrptconfig.config.screen.items;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.input.CharInput;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
 
 public class TextItem extends ConfigItem<String> {
 
-    TextFieldWidget valueEntry;
+    EditBox valueEntry;
 
-    public TextItem(Text name, String value, String defaultValue) {
+    public TextItem(Component name, String value, String defaultValue) {
         super(name, value, defaultValue);
         useDefaultResetBTN();
-        valueEntry = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 0, 0, 96, 18, Text.literal("Text Entry"));
+        valueEntry = new EditBox(Minecraft.getInstance().font, 0, 0, 96, 18, Component.literal("Text Entry"));
         setMaxLength(256);
-        valueEntry.setText(value);
-        valueEntry.setChangedListener(this::setValue);
+        valueEntry.setValue(value);
+        valueEntry.setResponder(this::setValue);
     }
 
     public TextItem setMaxLength(int length) {
@@ -34,28 +34,28 @@ public class TextItem extends ConfigItem<String> {
     @Override
     public void resetToDefault() {
         setValue(defaultValue);
-        valueEntry.setText(value);
+        valueEntry.setValue(value);
     }
 
     @Override
-    public boolean keyPressed(KeyInput input) {
+    public boolean keyPressed(KeyEvent input) {
         super.keyPressed(input);
         return valueEntry.keyPressed(input);
     }
 
     @Override
-    public boolean charTyped(CharInput input) {
+    public boolean charTyped(CharacterEvent input) {
         return valueEntry.charTyped(input);
     }
 
     @Override
-    public void mouseClicked(Click click, boolean doubled) {
+    public void mouseClicked(MouseButtonEvent click, boolean doubled) {
         super.mouseClicked(click, doubled);
         valueEntry.setFocused(valueEntry.mouseClicked(click, doubled));
     }
 
     @Override
-    public void render(DrawContext context, int x, int y, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int x, int y, int mouseX, int mouseY, float delta) {
         super.render(context, x, y, mouseX, mouseY, delta);
 
         if (valueEntry.isFocused())

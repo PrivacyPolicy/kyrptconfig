@@ -2,13 +2,12 @@ package net.kyrptonaught.kyrptconfig.config.screen.items.lists.entries;
 
 
 import net.kyrptonaught.kyrptconfig.TagHelper;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.InvalidIdentifierException;
-
+import net.minecraft.IdentifierException;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import java.util.List;
 
 public class ItemIconEntry extends IconEntry<Item> {
@@ -17,14 +16,14 @@ public class ItemIconEntry extends IconEntry<Item> {
     }
 
     @Override
-    public ItemConvertible getItemToRender(float delta) {
+    public ItemLike getItemToRender(float delta) {
         try {
             String entered = getValue();
             if (entered == null) return Items.BARRIER;
 
             if (entered.startsWith("#") && allowTags) {
                 entered = entered.replaceAll("#", "");
-                List<Item> items = TagHelper.getItemsInTag(Identifier.of(entered));
+                List<Item> items = TagHelper.getItemsInTag(Identifier.parse(entered));
                 if (items.size() > 0)
                     enteredTag = items;
                 else enteredTag = null;
@@ -35,8 +34,8 @@ public class ItemIconEntry extends IconEntry<Item> {
             }
             if (entered.startsWith("#"))
                 return Items.BARRIER;
-            return Registries.ITEM.getOptionalValue(Identifier.of(entered)).orElse(Items.BARRIER);
-        } catch (InvalidIdentifierException ignored) {
+            return BuiltInRegistries.ITEM.getOptional(Identifier.parse(entered)).orElse(Items.BARRIER);
+        } catch (IdentifierException ignored) {
         }
         return Items.BARRIER;
     }
